@@ -1,8 +1,9 @@
 import psycopg2
+from psycopg2 import sql
 
 DB_NAME='creative_agency'
 DB_USER="postgres"
-DB_PASSWORD="Pinky@143"
+DB_PASSWORD="123456"
 DB_HOST="localhost"
 DB_PORT=5432
 
@@ -24,7 +25,29 @@ def get_postgres_connection():
         port = DB_PORT
     )
 
+def create_database_if_not_exists():
+    # Connect to default 'postgres' database
+    conn = psycopg2.connect(
+        dbname="postgres",
+        user=DB_USER,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+    conn.autocommit = True  # Required for CREATE DATABASE
+    cursor = conn.cursor()
 
+    # Check if database exists
+    cursor.execute("SELECT 1 FROM pg_database WHERE datname=%s", (DB_NAME,))
+    exists = cursor.fetchone()
+    if not exists:
+        cursor.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(DB_NAME)))
+        print(f"Database '{DB_NAME}' created successfully!")
+    else:
+        print(f"Database '{DB_NAME}' already exists.")
+
+    cursor.close()
+    conn.close()
 
 def check_users_table_exists(conn):
     cursor = conn.cursor()

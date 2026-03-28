@@ -18,7 +18,7 @@ SECRET_ENCRYPTION = 'CRYPTOAGENCY'
 
 DB_NAME='creative_agency'
 DB_USER="postgres"
-DB_PASSWORD="Pinky@143"
+DB_PASSWORD="123456"
 DB_HOST="localhost"
 DB_PORT=5432
 

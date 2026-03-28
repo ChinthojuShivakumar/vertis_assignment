@@ -1,11 +1,14 @@
-from .tables import (get_database_connection, check_users_table_exists, 
+from .tables import ( get_database_connection, create_database_if_not_exists, check_users_table_exists, 
                     check_contact_forms_table_exists, check_blog_posts_table_exists, 
                     create_blog_posts_table_if_not_exists, create_contact_forms_table_if_not_exists, 
                     create_users_table_if_not_exists, check_about_page_table_exists, create_about_page_table_if_not_exists,
                       check_services_table_exists,create_services_table_if_not_exists)
 
 def initialize_tables():
+    create_database_if_not_exists()
     conn = get_database_connection()
+
+    
 
     if not check_users_table_exists(conn):
         create_users_table_if_not_exists(conn)
