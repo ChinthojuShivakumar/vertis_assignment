@@ -70,6 +70,10 @@ const BlogDetailPage = () => {
     return (
       <>
         <WebsiteNavbar />
+        <Metadata
+          title={`Blog Page - ${currentBlog.title} - Creative Agency`}
+          description="Visit Creative Agency Blog page"
+        />
         <div className="pt-24 text-center text-2xl">Blog not found!</div>
       </>
     );
@@ -78,6 +82,11 @@ const BlogDetailPage = () => {
   return (
     <>
       <WebsiteNavbar />
+
+      <Metadata
+        title={`Blog Page - ${currentBlog.title} - Creative Agency`}
+        description="Visit Creative Agency Blog page"
+      />
 
       <div className="pt-24 max-w-5xl mx-auto px-6">
         {/* IMAGE CAROUSEL */}

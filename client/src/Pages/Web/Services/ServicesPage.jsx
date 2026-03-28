@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import WebsiteNavbar from "../Navbar/Navbar";
 import { axiosInstance } from "../../../Utils/AxiosInstance";
 import { getPreview } from "../../../Utils/Functions";
+import Metadata from "../../../Utils/Metadata";
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -48,6 +49,11 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <WebsiteNavbar />
+
+      <Metadata
+              title="Services Page - Creative Agency"
+              description="Visit Creative Agency Services page"
+            />
 
       <div className="px-6 md:px-10 py-16 md:py-20">
         <div className="max-w-7xl mx-auto">

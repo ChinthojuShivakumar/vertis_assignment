@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { axiosInstance } from "../../../Utils/AxiosInstance";
 import WebsiteNavbar from "../Navbar/Navbar";
+import Metadata from "../../../Utils/Metadata";
 
 const About = () => {
   const [aboutData, setAboutData] = useState({
@@ -40,6 +41,10 @@ const About = () => {
   return (
     <>
       <WebsiteNavbar />
+      <Metadata
+        title="About Page - Creative Agency"
+        description="Visit Creative Agency About page"
+      />
 
       <div className="pt-20 max-w-7xl mx-auto px-6 py-20">
         {/* TITLE */}

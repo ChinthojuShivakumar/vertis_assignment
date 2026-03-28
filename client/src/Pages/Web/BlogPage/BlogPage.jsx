@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import WebsiteNavbar from "../Navbar/Navbar";
 import { axiosInstance } from "../../../Utils/AxiosInstance";
 import { getPreview } from "../../../Utils/Functions";
+import Metadata from "../../../Utils/Metadata";
 
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -29,6 +30,10 @@ const Blog = () => {
   return (
     <>
       <WebsiteNavbar />
+      <Metadata
+        title="Blog Page - Creative Agency"
+        description="Visit Creative Agency Blog page"
+      />
       <div className="pt-20 max-w-7xl mx-auto px-6 py-20">
         <h1 className="text-5xl font-bold text-center mb-12">Our Blog</h1>
         <div className="text-center text-gray-500 text-xl mb-12">

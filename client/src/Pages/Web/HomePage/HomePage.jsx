@@ -1,9 +1,15 @@
+import Metadata from "../../../Utils/Metadata";
 import WebsiteNavbar from "../Navbar/Navbar";
 
 const Home = () => {
   return (
     <>
       <WebsiteNavbar />
+      <Metadata
+        title="Home - Creative Agency"
+        description="Visit Creative Agency Home page"
+      />
+
       <div className="">
         <div className="min-h-[90vh] bg-gradient-to-br from-blue-600 via-cyan-500 to-blue-700 flex items-center">
           <div className="max-w-7xl mx-auto px-6 text-white text-center">

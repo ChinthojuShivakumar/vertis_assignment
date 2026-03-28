@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import WebsiteNavbar from "../Navbar/Navbar";
 import { axiosInstance } from "../../../Utils/AxiosInstance";
 import { getPreview } from "../../../Utils/Functions";
+import Metadata from "../../../Utils/Metadata";
 
 const ServiceDetail = () => {
   const { slug } = useParams();
@@ -81,6 +82,10 @@ const ServiceDetail = () => {
     return (
       <>
         <WebsiteNavbar />
+        <Metadata
+          title={`Services Page - ${currentService.title} - Creative Agency`}
+          description="Visit Creative Agency Blog page"
+        />
         <div className="pt-24 text-center text-2xl text-red-600">
           Service not found!
         </div>
@@ -91,6 +96,11 @@ const ServiceDetail = () => {
   return (
     <>
       <WebsiteNavbar />
+
+      <Metadata
+        title={`Services Page - ${currentService.title} - Creative Agency`}
+        description="Visit Creative Agency Blog page"
+      />
 
       <div className="pt-24 max-w-5xl mx-auto px-6 pb-16">
         {/* IMAGE / ICON CAROUSEL */}

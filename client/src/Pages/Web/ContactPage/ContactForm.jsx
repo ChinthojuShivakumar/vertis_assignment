@@ -2,6 +2,7 @@ import { useState } from "react";
 import WebsiteNavbar from "../Navbar/Navbar";
 import { errorMessage, successMessage } from "../../../Utils/Alert";
 import { axiosInstance } from "../../../Utils/AxiosInstance";
+import Metadata from "../../../Utils/Metadata";
 
 const AddContactSupport = () => {
   const [formData, setFormData] = useState({
@@ -113,6 +114,10 @@ const AddContactSupport = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
       <WebsiteNavbar />
+      <Metadata
+        title="Contact - Creative Agency"
+        description="Visit Creative Agency Contact page"
+      />
 
       {/* Page Content */}
       <div className="py-12 px-4">
