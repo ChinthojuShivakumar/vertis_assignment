@@ -53,12 +53,12 @@ const WebsiteNavbar = () => {
             ))}
 
             {/* Register & Login Buttons */}
-            <Link
+            {/* <Link
               to="/register"
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-2xl font-medium transition"
             >
               Register
-            </Link>
+            </Link> */}
             <Link
               to="/login"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-2xl font-medium transition"
