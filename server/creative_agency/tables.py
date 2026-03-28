@@ -7,6 +7,7 @@ DB_PASSWORD="123456"
 DB_HOST="localhost"
 DB_PORT=5432
 
+
 def get_database_connection():
     return psycopg2.connect(
         dbname = DB_NAME,
