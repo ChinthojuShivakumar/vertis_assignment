@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../../Utils/AxiosInstance";
 import CryptoJS from "crypto-js";
 import { errorMessage, successMessage } from "../../../Utils/Alert";
@@ -14,6 +14,7 @@ const LoginPage = () => {
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
   const validate = (name, value) => {
     switch (name) {
       case "email":
@@ -70,7 +71,6 @@ const LoginPage = () => {
 
       // Send to backend
       const response = await axiosInstance.post("login/", formData);
-      console.log("Response:", response.data);
       successMessage(response.data.message);
       localStorage.setItem("token", JSON.stringify(response.data.token));
       setForm({ email: "", password: "" });
@@ -78,7 +78,6 @@ const LoginPage = () => {
 
       window.location.reload();
     } catch (error) {
-      console.error(error);
       errorMessage(
         error.response?.data?.message || "Something went wrong, try again.",
       );
@@ -125,7 +124,6 @@ const LoginPage = () => {
                 onChange={handleChange}
                 className="w-full border rounded-md p-3 focus:ring-2 focus:ring-blue-400 outline-none"
               />
-
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email}</p>
               )}
@@ -141,35 +139,23 @@ const LoginPage = () => {
                 onChange={handleChange}
                 className="w-full border rounded-md p-3 focus:ring-2 focus:ring-blue-400 outline-none"
               />
-
               {errors.password && (
                 <p className="text-red-500 text-sm">{errors.password}</p>
               )}
             </div>
 
             {/* REMEMBER */}
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-start text-sm">
               <label className="flex items-center gap-2 text-gray-600">
                 <input type="checkbox" />
                 Remember me
               </label>
-
-              <span className="text-blue-500 cursor-pointer">
-                Forgot password?
-              </span>
             </div>
 
             <button className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition">
               LOGIN
             </button>
           </form>
-
-          <p className="text-center text-sm text-gray-500 mt-6">
-            New user?{" "}
-            <Link to="/register" className="text-blue-500 font-medium">
-              Signup
-            </Link>
-          </p>
         </div>
       </div>
     </div>

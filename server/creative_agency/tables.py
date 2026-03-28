@@ -205,3 +205,47 @@ def create_services_table_if_not_exists(conn):
     conn.commit()
     cursor.close()
 
+
+import bcrypt
+
+def create_admin_user_if_not_exists():
+    conn = None
+    cursor = None
+    try:
+        conn = get_database_connection()
+        cursor = conn.cursor()
+
+        admin_email = "admin@gmail.com"
+        admin_password = "Admin@123"
+
+        # 🔍 Check if admin email already exists
+        cursor.execute("SELECT id FROM users WHERE email = %s", (admin_email,))
+        exists = cursor.fetchone()
+
+        if exists:
+            print("Admin already exists. Skipping creation.")
+            return
+
+        # 🔐 Hash password
+        hashed_password = bcrypt.hashpw(
+            admin_password.encode('utf-8'),
+            bcrypt.gensalt(12)
+        ).decode('utf-8')
+
+        # ➕ Insert admin user
+        cursor.execute("""
+            INSERT INTO users (first_name, last_name, email, password)
+            VALUES (%s, %s, %s, %s)
+        """, ("Admin", "User", admin_email, hashed_password))
+
+        conn.commit()
+        print("Admin user created successfully!")
+
+    except Exception as e:
+        print("Error creating admin:", str(e))
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()

@@ -14,10 +14,13 @@ const Services = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axiosInstance.get("getservices/"); 
 
-      if (res.data.status === 200 && res.data.data) {
+      const res = await axiosInstance.get("getservices/");
+
+      if (res.data?.status === 200 && Array.isArray(res.data.data)) {
         setServices(res.data.data);
+      } else {
+        setServices([]); // fallback if unexpected structure
       }
     } catch (err) {
       console.error("Error fetching services:", err);
@@ -37,23 +40,72 @@ const Services = () => {
     return `http://127.0.0.1:8000/media/${icon.replace(/^\/media\//, "")}`;
   };
 
+  // ✅ Loading UI (unchanged)
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <WebsiteNavbar />
-        <div className="flex items-center justify-center h-[70vh]">Loading services...</div>
+        <div className="flex items-center justify-center h-[70vh]">
+          Loading services...
+        </div>
       </div>
     );
   }
 
+  // ✅ Error UI
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <WebsiteNavbar />
+        <div className="flex flex-col items-center justify-center h-[70vh] text-center px-4">
+          <div className="text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+            Something went wrong
+          </h2>
+          <p className="text-gray-600">{error}</p>
+
+          <button
+            onClick={fetchServices}
+            className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ Empty Data UI
+  if (!services || services.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <WebsiteNavbar />
+
+        <Metadata
+          title="Services Page - Creative Agency"
+          description="Visit Creative Agency Services page"
+        />
+
+        <div className="flex flex-col items-center justify-center h-[70vh] text-center px-4">
+          <div className="text-5xl mb-4">📭</div>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+            No Services Available
+          </h2>
+          <p className="text-gray-600">Please contact admin to add data.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ Main UI (UNCHANGED)
   return (
     <div className="min-h-screen bg-gray-50">
       <WebsiteNavbar />
 
       <Metadata
-              title="Services Page - Creative Agency"
-              description="Visit Creative Agency Services page"
-            />
+        title="Services Page - Creative Agency"
+        description="Visit Creative Agency Services page"
+      />
 
       <div className="px-6 md:px-10 py-16 md:py-20">
         <div className="max-w-7xl mx-auto">
@@ -66,10 +118,13 @@ const Services = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
-              <Link key={service.id} to={`/services/${service.slug}`} className="group">
+              <Link
+                key={service.id}
+                to={`/services/${service.slug}`}
+                className="group"
+              >
                 <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 h-full flex flex-col">
-                  
-                  {/* Icon Section - Reduced Gap */}
+                  {/* Icon Section */}
                   <div className="pt-10 pb-6 flex justify-center bg-gray-50">
                     {getIconUrl(service.icon) ? (
                       <img
@@ -84,24 +139,24 @@ const Services = () => {
                     )}
                   </div>
 
-                  {/* Thin Divider Line - Like in your screenshot */}
+                  {/* Divider */}
                   <div className="h-px bg-gray-200 mx-8" />
 
-                  {/* Content Section - Much Tighter Spacing */}
+                  {/* Content */}
                   <div className="p-8 pt-6 flex-1 flex flex-col">
                     <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
                       {service.title}
                     </h2>
 
-                    {/* Safe Preview of HTML Description */}
                     <p className="text-gray-600 leading-relaxed flex-1">
                       {getPreview(service.description, 130)}
                     </p>
 
-                    {/* Read More */}
                     <div className="mt-6 text-blue-600 font-medium flex items-center gap-2 group-hover:gap-3 transition-all text-sm">
-                      Read More 
-                      <span className="transition-transform group-hover:translate-x-1">→</span>
+                      Read More
+                      <span className="transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
                     </div>
                   </div>
                 </div>

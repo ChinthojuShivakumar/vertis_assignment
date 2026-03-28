@@ -10,17 +10,25 @@ const ServiceDetail = () => {
 
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Fetch all services (for current service + related)
+  // Fetch services
   const fetchServices = async () => {
     try {
-      const res = await axiosInstance.get("getservices/"); // or "getservices/"
-      if (res.data.status === 200) {
-        setServices(res.data.data || []);
+      setLoading(true);
+      setError(null);
+
+      const res = await axiosInstance.get("getservices/");
+
+      if (res.data?.status === 200 && Array.isArray(res.data.data)) {
+        setServices(res.data.data);
+      } else {
+        setServices([]);
       }
-    } catch (error) {
-      console.error("Failed to fetch services:", error);
+    } catch (err) {
+      console.error("Failed to fetch services:", err);
+      setError("Failed to load service details.");
     } finally {
       setLoading(false);
     }
@@ -30,7 +38,7 @@ const ServiceDetail = () => {
     fetchServices();
   }, []);
 
-  // Scroll to top when slug changes
+  // Scroll to top on slug change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setCurrentImageIndex(0);
@@ -41,7 +49,7 @@ const ServiceDetail = () => {
     .filter((service) => service.slug !== slug)
     .slice(0, 3);
 
-  // Auto slide for images (if multiple images added in future)
+  // Auto slider
   useEffect(() => {
     if (!currentService?.images?.length || currentService.images.length <= 1)
       return;
@@ -69,6 +77,7 @@ const ServiceDetail = () => {
     );
   };
 
+  // ✅ Loading UI (same)
   if (loading) {
     return (
       <>
@@ -78,21 +87,77 @@ const ServiceDetail = () => {
     );
   }
 
-  if (!currentService) {
+  // ✅ Error UI
+  if (error) {
     return (
       <>
         <WebsiteNavbar />
-        <Metadata
-          title={`Services Page - ${currentService.title} - Creative Agency`}
-          description="Visit Creative Agency Blog page"
-        />
-        <div className="pt-24 text-center text-2xl text-red-600">
-          Service not found!
+        <div className="flex flex-col items-center justify-center h-[70vh] text-center px-4">
+          <div className="text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-semibold mb-2">Something went wrong</h2>
+          <p className="text-gray-600">{error}</p>
+
+          <button
+            onClick={fetchServices}
+            className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Retry
+          </button>
         </div>
       </>
     );
   }
 
+  // ✅ Empty API data
+  if (!services || services.length === 0) {
+    return (
+      <>
+        <WebsiteNavbar />
+        <Metadata
+          title="Services - Creative Agency"
+          description="No services available"
+        />
+
+        <div className="flex flex-col items-center justify-center h-[70vh] text-center px-4">
+          <div className="text-5xl mb-4">📭</div>
+          <h2 className="text-2xl font-semibold mb-2">No Services Available</h2>
+          <p className="text-gray-600">Please contact admin to add data.</p>
+        </div>
+      </>
+    );
+  }
+
+  // ✅ Service not found (slug wrong)
+  if (!currentService) {
+    return (
+      <>
+        <WebsiteNavbar />
+        <Metadata
+          title="Service Not Found - Creative Agency"
+          description="Service not found"
+        />
+
+        <div className="pt-24 text-center">
+          <div className="text-5xl mb-4">❌</div>
+          <h2 className="text-2xl text-red-600 font-semibold mb-2">
+            Service not found!
+          </h2>
+          <p className="text-gray-600 mb-6">
+            The requested service does not exist.
+          </p>
+
+          <Link
+            to="/services"
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Back to Services
+          </Link>
+        </div>
+      </>
+    );
+  }
+
+  // ✅ MAIN UI (UNCHANGED)
   return (
     <>
       <WebsiteNavbar />
@@ -103,7 +168,7 @@ const ServiceDetail = () => {
       />
 
       <div className="pt-24 max-w-5xl mx-auto px-6 pb-16">
-        {/* IMAGE / ICON CAROUSEL */}
+        {/* IMAGE / ICON */}
         <div className="relative mb-10">
           {currentService.icon ||
           (currentService.images && currentService.images.length > 0) ? (
@@ -118,7 +183,6 @@ const ServiceDetail = () => {
                 className="w-full h-96 object-cover rounded-3xl shadow-lg"
               />
 
-              {/* Navigation Buttons - Show only if multiple images */}
               {currentService.images && currentService.images.length > 1 && (
                 <>
                   <button
@@ -134,12 +198,11 @@ const ServiceDetail = () => {
                     ❯
                   </button>
 
-                  {/* Dots */}
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
                     {currentService.images.map((_, index) => (
                       <div
                         key={index}
-                        className={`h-3 w-3 rounded-full transition-all ${
+                        className={`h-3 w-3 rounded-full ${
                           index === currentImageIndex
                             ? "bg-white scale-110"
                             : "bg-white/50"
@@ -151,7 +214,6 @@ const ServiceDetail = () => {
               )}
             </div>
           ) : (
-            // Fallback Icon
             <div className="flex justify-center">
               <div className="w-52 h-52 bg-gray-100 rounded-3xl flex items-center justify-center text-8xl shadow-inner">
                 📌
@@ -165,28 +227,15 @@ const ServiceDetail = () => {
           {currentService.title}
         </h1>
 
-        {/* Status */}
-        {/* {currentService.status && (
-          <div className="flex justify-center mb-12">
-            <span
-              className={`inline-block px-6 py-2 rounded-full text-sm font-medium ${
-                currentService.status === "active"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }`}
-            >
-              {currentService.status.toUpperCase()}
-            </span>
-          </div>
-        )} */}
-
-        {/* Main Content - Full HTML Description */}
+        {/* Description */}
         <div
           className="prose prose-lg max-w-none mx-auto text-gray-700 leading-relaxed mb-16"
-          dangerouslySetInnerHTML={{ __html: currentService.description }}
+          dangerouslySetInnerHTML={{
+            __html: currentService.description,
+          }}
         />
 
-        {/* Call to Action */}
+        {/* CTA */}
         <div className="text-center mb-20">
           <button
             onClick={() => (window.location.href = "/contact")}
@@ -196,7 +245,7 @@ const ServiceDetail = () => {
           </button>
         </div>
 
-        {/* RELATED SERVICES */}
+        {/* RELATED */}
         {relatedServices.length > 0 && (
           <>
             <h2 className="text-3xl font-bold mb-8 text-center">
@@ -211,13 +260,12 @@ const ServiceDetail = () => {
                   className="group"
                 >
                   <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition h-full flex flex-col">
-                    {/* Icon */}
                     <div className="pt-8 pb-6 flex justify-center bg-gray-50">
                       {service.icon ? (
                         <img
                           src={service.icon}
                           alt={service.title}
-                          className="w-24 h-24 object-contain transition-transform group-hover:scale-110"
+                          className="w-24 h-24 object-contain group-hover:scale-110 transition"
                         />
                       ) : (
                         <div className="w-24 h-24 bg-gray-100 rounded-2xl flex items-center justify-center text-6xl">
