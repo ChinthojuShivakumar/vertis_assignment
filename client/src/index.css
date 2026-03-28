@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+
+.ProseMirror {
+  min-height: 180px;
+  outline: none;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
